@@ -36,5 +36,33 @@ class UserFavoriteResource(Resource):
         user_favorites = Favorite.query.filter_by(user_id=user_id)
         return favorite_schema.dump(user_favorites), 200
         
+class GetBookInformation(Resource):
+      def get(self, book_id, user_id):
+            sum_review = 0  
+            custom_reponse = {}
+            book_reviews = Review.query.filter_by(book_id=book_id)
+            ratings = [review.rating for review in book_reviews]
+            try:
+                  average_review = sum(ratings)/len(ratings)
+                  custom_reponse = {
+                        "Average Rewview": average_review
+                  }
+            except:
+                  average_review = 'Not Available'
+                  custom_reponse = {
+                        "Average Rewview": average_review
+           
+                  }
+            if Favorite.query.filter_by(book_id=book_id, user_id=user_id):
+                  custom_reponse["is_favorite"] = True
+            else: 
+                  custom_reponse["is_favorite"] = False
+            return custom_reponse, 200
+                  
+                 
+
+            
+
+
         
 
