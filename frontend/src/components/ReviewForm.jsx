@@ -5,11 +5,10 @@ const CreateReview = () => {
     
     async function createReview(review) {
         try {
-            let response = await axios.post("http://127.0.0.1:5000/api/songs",review)
+            let response = await axios.post(`127.0.0.1:5000/api/review`,review)
             console.log("Thanks for the Review!!!")
         } catch (error) {
-            console.log(error)
-        }
+            console.log(error)        }
 
     }
     const [rating, setRating] = useState('');

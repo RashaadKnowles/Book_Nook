@@ -2,7 +2,7 @@ from flask import request
 from flask_jwt_extended import jwt_required, get_jwt_identity, verify_jwt_in_request
 from flask_restful import Resource
 from database.models import db, Review, Favorite
-from database.schemas import rewiew_schema, favorite_schema 
+from database.schemas import rewiew_schema, favorite_schema,reviews_schema
 
 
 class UserReviewResource(Resource):
@@ -16,7 +16,7 @@ class UserReviewResource(Resource):
         db.session.add(new_review)
         db.session.commit()
         return rewiew_schema.dump(new_review), 201
-
+    
 
 class UserFavoriteResource(Resource):
       @jwt_required()
@@ -37,23 +37,22 @@ class UserFavoriteResource(Resource):
         return favorite_schema.dump(user_favorites), 200
         
 class GetBookInformation(Resource):
-      def get(self, book_id, user_id):
-            sum_review = 0  
+      def get(self):
+            book_id = request.args.get("book_id")
             custom_reponse = {}
             book_reviews = Review.query.filter_by(book_id=book_id)
+            custom_reponse["data"] = reviews_schema.dump(book_reviews)
+            # print(book_id)
             ratings = [review.rating for review in book_reviews]
             try:
                   average_review = sum(ratings)/len(ratings)
-                  custom_reponse = {
-                        "Average Rewview": average_review
-                  }
+                  custom_reponse["Average Rewview"]= average_review
+                  
             except:
                   average_review = 'Not Available'
-                  custom_reponse = {
-                        "Average Rewview": average_review
-           
-                  }
-            if Favorite.query.filter_by(book_id=book_id, user_id=user_id):
+            custom_reponse["Average Rewview"]= average_review
+
+            if Favorite.query.filter_by(book_id=book_id):
                   custom_reponse["is_favorite"] = True
             else: 
                   custom_reponse["is_favorite"] = False

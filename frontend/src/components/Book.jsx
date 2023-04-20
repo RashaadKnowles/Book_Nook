@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-const Book = (props) => {
+const BookTable = (props) => {
     
     return ( 
         <table>
@@ -11,6 +11,7 @@ const Book = (props) => {
                 </tr>
             </thead>
         </table>
+        
      );
 }
  
